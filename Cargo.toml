@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-isis-eps-api-v2 = { git = "ssh://git@github.com/Oscar-Ansted/isis-eps-api-v2 }
+isis-eps-api-v2 = { git = "ssh://git@github.com/Oscar-Ansted/isis-eps-api-v2" }
 cubeos-service = { git = "ssh://git@github.com/Cube-OS/cubeos-service.git"}
 cubeos-error = { git = "ssh://git@github.com/Cube-OS/cubeos-error.git"}
 juniper = "0.14.2"

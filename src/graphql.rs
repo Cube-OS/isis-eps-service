@@ -21,6 +21,8 @@ pub struct GqlInput {
 }
 
 
+
+
 // OUTPUT
 #[derive(Serialize,Deserialize)]
 pub struct GqlVIPD {
@@ -101,7 +103,7 @@ impl From<EPSOutput> for GqlOutput {
     
     fn from(o: EPSOutput) -> GqlOutput {
         GqlOutput{
-            gql_out_STAT: o.STAT,
+            gql_out_STAT: o.STAT.into(),
             gql_out_TEMP: o.TEMP,
             gql_out_VIP_DIST_INPUT: from(GqlVIPD),
             gql_out_VIP_BAT_INPUT: from(GqlVIPD),
