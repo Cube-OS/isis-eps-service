@@ -2,7 +2,7 @@ use std::time::Duration;
 use std::sync::{Arc,Mutex,RwLock};
 use std::convert::From;
 use isis_eps_api_v2::*; // move to CubeOS git
-use cubeos_error::{Error,Result};
+use cubeos_error::{Error as CubeOSError, Result as CubeOSResult};
 use cubeos_service::*;
 use cubeos_service::{Config,Service};
 use juniper::*;
@@ -13,15 +13,26 @@ use std::convert::TryFrom;
 
 // INPUT
 #[derive(GraphQLInputObject,Clone)]
-pub struct GqlInput {
+pub struct GqlEpsInput {
     gql_in_timeCorrection: i32,
-    gql_in_OBC_BF: u16,
-    gql_in_OBC_IDX: u8,
-    gql_in_ROS: u8,
+    gql_in_OBC_BF: i32,
+    gql_in_OBC_IDX: i32,
+    gql_in_ROS: i32,
 }
 
+// Translation from GraphQLInput Type to normal types
+impl TryFrom<GqlEpsInput> for addInput {
+    type Error = CubeOSError;
 
-
+    fn try_from(e: GqlEpsInput) -> CubeOSResult<addInput> {
+        Ok(addInput {
+            timeCorrection: e.gql_in_timeCorrection,
+            OBC_BF: e.gql_in_OBC_BF as u16,
+            OBC_IDX: e.gql_in_OBC_IDX as u8,
+            ROS: e.gql_in_ROS as u8,
+        })
+    }
+}
 
 // OUTPUT
 #[derive(Serialize,Deserialize)]
@@ -31,6 +42,16 @@ pub struct GqlVIPD {
     gql_out_POWE: f64,
 }
 
+impl From<VIPD> for GqlVIPD {
+    fn from(o: VIPD) -> GqlVIPD {
+        GqlVIPD {
+            gql_out_VOLT: o.VOLT as f64,
+            gql_out_CURR: o.CURR as f64,
+            gql_out_POWE: o.POWE as f64,
+        }
+    }
+}
+
 #[derive(Serialize,Deserialize)]
 pub struct GqlCCSD {
     gql_out_VOLT_IN_MPPT: f64,
@@ -38,6 +59,19 @@ pub struct GqlCCSD {
     gql_out_VOLT_OU_MPPT: f64,
     gql_out_CURR_OU_MPPT: f64,
 }
+
+
+impl From<CCSD> for GqlCCSD {
+    fn from(o: CCSD) -> GqlCCSD {
+        GqlCCSD {
+            gql_out_VOLT_IN_MPPT: o.VOLT_IN_MPPT,
+            gql_out_CURR_IN_MPPT: o.CURR_IN_MPPT,
+            gql_out_VOLT_OU_MPPT: o.VOLT_OU_MPPT,
+            gql_out_CURR_OU_MPPT: o.CURR_OU_MPPT,
+        }
+    }
+}
+
 // Translation for OUTPUT
 pub struct GqlOutput {
     // In byte order the first 4 (inputs) would be before the STAT.
@@ -77,30 +111,8 @@ pub struct GqlOutput {
     gql_out_CC5: GqlCCSD,
 }
 
-impl From<VIPD> -> GqlVIPD {
-    fn from(o: VIPD) -> GqlVIPD {
-        GqlVIPD {
-            gql_out_VOLT: o.VOLT,
-            gql_out_CURR: o.CURR,
-            gql_out_POWE: o.POWE,
-        }
-    }
-}
-
-impl From<CCSD> -> GqlCCSD {
-    fn from(o: CCSD) -> GqlCCSD {
-        GqlCCSD {
-            gql_out_VOLT_IN_MPPT: o.VOLT_IN_MPPT,
-            gql_out_CURR_IN_MPPT: o.CURR_IN_MPPT,
-            gql_out_VOLT_OU_MPPT: o.VOLT_OU_MPPT,
-            gql_out_CURR_OU_MPPT: o.CURR_OU_MPPT,
-        }
-    }
-}
-
 // Implement of type conversion
 impl From<EPSOutput> for GqlOutput {
-    
     fn from(o: EPSOutput) -> GqlOutput {
         GqlOutput{
             gql_out_STAT: o.STAT.into(),
