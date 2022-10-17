@@ -13,5 +13,7 @@ use std::convert::TryFrom;
 
 // Make this service.rs (macro) -------------------------------------------------
 service_macro!{
-    query: SystemReset => fn sys_reset(&self, typ: STID) -> Result<()>; in: STID; // define in graphql.rs
+    subsystem::Subsytem {
+        query: SystemReset => fn sys_reset(&self, typ: STID) -> Result<()>; in: STID; // define in graphql.rs
+    }
 }
