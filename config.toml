@@ -1,0 +1,18 @@
+# Ground Segment
+[isis-eps-service]
+i2c_bus = "/dev/i2c-0"
+i2c_addr = '0x1A'
+# service address on the ground with ip:port
+udp_path = '0.0.0.0:8023'
+# service address on the satellite with ip:port
+udp_to = '0.0.0.0:8022'
+err_buff_len = 64
+wd_timeout = 1000
+udp_socket = '192.168.0.1:8021'
+target = '192.168.0.2:8021'
+
+# Space Segment
+[isis-eps-service.addr]
+ip = "0.0.0.0"
+port = 8021
+
