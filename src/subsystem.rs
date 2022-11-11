@@ -31,6 +31,8 @@ use juniper::*;
 use serde::*;
 // use std::convert::TryFrom;
 
+const PIU_STID: u8 = 0x1A;
+
 #[derive(Clone)]
 pub struct Subsystem {
     eps: Arc<Mutex<EPS>>,
@@ -60,75 +62,111 @@ impl Subsystem {
     }
 
     // All isis functions here
-    pub fn eps_ping(&self, typ_stid: StID) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().eps_ping(typ_stid)?)
+    pub fn eps_ping(&self) -> EpsResult<()> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().eps_ping(typ_id)?)
     }
 
-    pub fn sys_reset(&self, typ_stid: StID, ret_key: u8) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().sys_reset(typ_stid, ret_key)?)
+    pub fn sys_reset(&self, ret_key: u8) -> EpsResult<()> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;        
+        Ok(self.eps.lock().unwrap().sys_reset(typ_id, ret_key)?)
     }
 
-    pub fn shutdown_all(&self, typ_stid: StID) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().shutdown_all(typ_stid)?)
+    pub fn shutdown_all(&self) -> EpsResult<()> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().shutdown_all(typ_id)?)
     }
 
-    pub fn watchdog_reset(&self, typ_stid: StID) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().watchdog_reset(typ_stid)?)
+    pub fn watchdog_reset(&self) -> EpsResult<()> {        
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().watchdog_reset(typ_id)?)
     }
 
-    pub fn set_group_outputs(&self, typ_stid: StID, typ_group: BusGroup, eps_bitflag: u16) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().set_group_outputs(typ_stid, typ_group, eps_bitflag)?)
+    pub fn set_group_outputs(&self, typ_group: BusGroup, eps_bitflag: u16) -> EpsResult<()> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().set_group_outputs(typ_id, typ_group, eps_bitflag)?)
     }
 
-    pub fn set_single_output(&self, typ_stid: StID, typ_channel: BusChannel, eps_ch_idx: u8) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().set_single_output(typ_stid, typ_channel, eps_ch_idx)?)
+    pub fn set_single_output(&self, typ_channel: BusChannel, eps_ch_idx: u8) -> EpsResult<()> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().set_single_output(typ_id, typ_channel, eps_ch_idx)?)
     }
 
-    pub fn mode_switch(&self, typ_stid: StID, mode: ModeSwitch) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().mode_switch(typ_stid, mode)?)    
+    pub fn mode_switch(&self, mode: ModeSwitch) -> EpsResult<()> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().mode_switch(typ_id, mode)?)    
     }
 
-    pub fn system_status(&self, typ_stid: StID) -> EpsResult<SystemStatus> {
-        Ok(self.eps.lock().unwrap().system_status(typ_stid)?)
+    pub fn system_status(&self) -> EpsResult<SystemStatus> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().system_status(typ_id)?)
     }
 
-    pub fn overcurrent_state(&self, typ_stid: StID) -> EpsResult<OverCurrentFaultState> {
-        Ok(self.eps.lock().unwrap().overcurrent_state(typ_stid)?)
+    pub fn overcurrent_state(&self) -> EpsResult<OverCurrentFaultState> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().overcurrent_state(typ_id)?)
     }
 
-    pub fn abf_state(&self, typ_stid: StID) -> EpsResult<ABFState> {
-        Ok(self.eps.lock().unwrap().abf_state(typ_stid)?)
+    pub fn abf_state(&self) -> EpsResult<ABFState> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().abf_state(typ_id)?)
     }
 
-    pub fn pdu_hk(&self, typ_stid: StID, mode: PDUHkSel) -> EpsResult<PDUHk> {
-        Ok(self.eps.lock().unwrap().pdu_hk(typ_stid, mode)?)
+    pub fn pdu_hk(&self, mode: PDUHkSel) -> EpsResult<PDUHk> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().pdu_hk(typ_id, mode)?)
     }
 
-    pub fn pbu_hk(&self, typ_stid: StID, mode: PBUHkSel) -> EpsResult<PBUHk> {
-        Ok(self.eps.lock().unwrap().pbu_hk(typ_stid, mode)?)
+    pub fn pbu_hk(&self, mode: PBUHkSel) -> EpsResult<PBUHk> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().pbu_hk(typ_id, mode)?)
     }
 
-    pub fn pcu_hk(&self, typ_stid: StID, mode: PCUHkSel) -> EpsResult<PCUHk> {
-        Ok(self.eps.lock().unwrap().pcu_hk(typ_stid, mode)?)
+    pub fn pcu_hk(&self, mode: PCUHkSel) -> EpsResult<PCUHk> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid; 
+        Ok(self.eps.lock().unwrap().pcu_hk(typ_id, mode)?)
     }
 
-    pub fn piu_hk(&self, typ_stid: StID, mode: PIUHkSel) -> EpsResult<PIUHk> {
-        Ok(self.eps.lock().unwrap().piu_hk(typ_stid, mode)?)
+    pub fn piu_hk(&self, mode: PIUHkSel) -> EpsResult<PIUHk> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().piu_hk(typ_id, mode)?)
     }
 
-    pub fn system_config_cmd(&self, typ_stid: StID, mode: SysConfig1, para_id: u16) -> EpsResult<Vec<u8>> {
-        Ok(self.eps.lock().unwrap().system_config_command(typ_stid, mode, para_id)?)   
+    pub fn system_config_cmd(&self, mode: SysConfig1, para_id: u16) -> EpsResult<Vec<u8>> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;        
+        Ok(self.eps.lock().unwrap().system_config_command(typ_id, mode, para_id)?)   
     }
 
-    pub fn reset_all_conf(&self, typ_stid: StID, mode: SysConfig2, config_key: u8) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().reset_all_conf(typ_stid, mode, config_key)?)   
+    pub fn reset_all_conf(&self, mode: SysConfig2, config_key: u8) -> EpsResult<()> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().reset_all_conf(typ_id, mode, config_key)?)   
     }
 
-    pub fn correct_time(&self, typ_stid: StID, time_correction: i32) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().correct_time(typ_stid, time_correction)?)   
+    pub fn correct_time(&self, time_correction: i32) -> EpsResult<()> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().correct_time(typ_id, time_correction)?)   
     }
 
-    pub fn reset_all_counters(&self, typ_stid: StID, zero_key: u8) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().reset_all_counters(typ_stid, zero_key)?)   
+    pub fn reset_all_counters(&self, zero_key: u8) -> EpsResult<()> {
+        // hard coded the typ_id to be PiuStid
+        let typ_id = StID::PiuStid;
+        Ok(self.eps.lock().unwrap().reset_all_counters(typ_id, zero_key)?)   
     }
 }
