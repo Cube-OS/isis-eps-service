@@ -30,7 +30,7 @@ use failure::format_err;
 
 // -------------------------main.rs---------------------------------
 fn main() -> EpsResult<()> {
-    let service_config = Config::new("isis_eps_service")
+    let service_config = Config::new("isis-eps-service")
     .map_err(|err| {
         error!("Failed to load service config: {:?}", err);
         err
