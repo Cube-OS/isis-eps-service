@@ -40,20 +40,20 @@ use crate::graphql::*;
 service_macro! {
     subsystem::Subsystem{ 
         query: EpsPing => fn eps_ping(&self) -> Result<()>;  
-        query: SystemStatus => fn sys_reset(&self, ret_key: u8) -> Result<()>; in: i32;
-        query: OvercurrentState => fn overcurrent_state(&self) -> Result<Vec<u8>>; out: Vec<u8>;
-        query: AbfState => fn abf_state(&self) -> Result<Vec<u8>>; out: Vec<u8>;
+        query: SystemStatus => fn sys_reset(&self, ret_key: u8) -> Result<SystemStatus>; in: i32; out: SystemStatus;
+        query: OvercurrentState => fn overcurrent_state(&self) -> Result<OverCurrentFaultState>; out: OverCurrentFaultState;
+        query: AbfState => fn abf_state(&self) -> Result<ABFState>; out: ABFState;
         // query: PduHk => fn pdu_hk(&self, mode: PDUHkSel) -> Result<Vec<u8>>; in: PDUHkSel; out: Vec<u8>;
         // query: PbuHk => fn pbu_hk(&self, mode: PBUHkSel) -> Result<Vec<u8>>; in: PBUHkSel; out: Vec<u8>;
-        query: PiuHk => fn piu_hk(&self, mode: PIUHkSel) -> Result<Vec<u8>>; in: PIUHkSel; out: Vec<u8>;
+        query: PiuHk => fn piu_hk(&self, mode: PIUHkSel) -> Result<PIUHk>; in: PIUHkSel; out: PIUHk;
         // query: PcuHk => fn pcu_hk(&self, mode: PCUHkSel) -> Result<Vec<u8>>; in: PCUHkSel; out: Vec<u8>;
-        mutation: SysReset => fn sys_reset(&self, ret_key: u8) -> Result<()>; in: i32;
+        query: SystemConfigCmd => fn system_config_cmd(&self, mode: SysConfig1, para_id: u16) -> EpsResult<Vec<u8>>; in: SysConfig1, i32; out: Vec<u8>;
         mutation: ShutDownAll =>fn shutdown_all(&self) -> EpsResult<()>; 
         mutation: WatchdogReset => fn watchdog_reset(&self) -> EpsResult<()>; 
+        mutation: SysReset => fn sys_reset(&self, ret_key: u8) -> Result<()>; in: i32;
         mutation: SetGroupOutputs => fn set_group_outputs(&self, typ_group: BusGroup, eps_bitflag: u16) -> EpsResult<()>; in: BusGroup, i32;
         mutation: SetSingleOutput => fn set_single_output(&self, typ_channel: BusChannel, eps_ch_idx: u8) -> EpsResult<()>; in: BusChannel, i32;
-        mutation: ModeSwitch => fn mode_switch(&self, mode: ModeSwitch) -> EpsResult<()>; in: ModeSwitch;
-        mutation: SystemConfigCmd => fn system_config_cmd(&self, mode: SysConfig1, para_id: u16) -> EpsResult<Vec<u8>>; in: SysConfig1, i32; out: Vec<u8>;
+        mutation: ModeSwitch => fn mode_switch(&self, mode: ModeSwitch) -> EpsResult<()>; in: ModeSwitch;        
         mutation: ResetAllConf => fn reset_all_conf(&self, mode: SysConfig2, config_key: u8) -> EpsResult<()>; in: SysConfig2, i32;
         mutation: CorrectTime => fn correct_time(&self, time_correction: i32) -> EpsResult<()>; in: i32;
         mutation: ResetAllCounters => fn reset_all_counters(&self, zero_key: u8) -> EpsResult<()>; in: i32;

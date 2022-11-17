@@ -1,5 +1,5 @@
 # Ground Segment
-[isis-eps-service]
+[isis_eps_service]
 i2c_bus = "/dev/i2c-0"
 i2c_addr = '0x1A'
 # service address on the ground with ip:port
