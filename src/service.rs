@@ -40,12 +40,12 @@ use crate::graphql::*;
 service_macro! {
     subsystem::Subsystem{ 
         query: EpsPing => fn eps_ping(&self) -> Result<()>;  
-        query: SystemStatus => fn sys_reset(&self, ret_key: u8) -> Result<SystemStatus>; in: i32; out: SystemStatus;
-        query: OvercurrentState => fn overcurrent_state(&self) -> Result<OverCurrentFaultState>; out: OverCurrentFaultState;
-        query: AbfState => fn abf_state(&self) -> Result<ABFState>; out: ABFState;
+        query: SystemStatus => fn sys_reset(&self, ret_key: u8) -> Result<GqlSystemStatus>; in: i32; out: GqlSystemStatus;
+        query: OvercurrentState => fn overcurrent_state(&self) -> Result<GqlOverCurrentFaultState>; out: GqlOverCurrentFaultState;
+        query: AbfState => fn abf_state(&self) -> Result<ABFState>; out: GqlABFState;
         // query: PduHk => fn pdu_hk(&self, mode: PDUHkSel) -> Result<Vec<u8>>; in: PDUHkSel; out: Vec<u8>;
         // query: PbuHk => fn pbu_hk(&self, mode: PBUHkSel) -> Result<Vec<u8>>; in: PBUHkSel; out: Vec<u8>;
-        query: PiuHk => fn piu_hk(&self, mode: PIUHkSel) -> Result<PIUHk>; in: PIUHkSel; out: PIUHk;
+        query: PiuHk => fn piu_hk(&self, mode: PIUHkSel) -> Result<GqlPIUHk>; in: PIUHkSel; out: GqlPIUHk;
         // query: PcuHk => fn pcu_hk(&self, mode: PCUHkSel) -> Result<Vec<u8>>; in: PCUHkSel; out: Vec<u8>;
         query: SystemConfigCmd => fn system_config_cmd(&self, mode: SysConfig1, para_id: u16) -> EpsResult<Vec<u8>>; in: SysConfig1, i32; out: Vec<u8>;
         mutation: ShutDownAll =>fn shutdown_all(&self) -> EpsResult<()>; 
