@@ -22,5 +22,5 @@ ground = { git = "ssh://git@github.com/Cube-OS/ground"}
 [features]
 default = ['cubeos-service/default']
 # graphql = ['cubeos-service/graphql']
-ground = ['cubeos-service/ground', 'isis-eps-api/ground']
-debug = ['cubeos-service/debug','isis-eps-api/debug']
+ground = ['cubeos-service/ground']
+debug = ['cubeos-service/debug']
