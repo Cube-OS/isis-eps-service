@@ -123,14 +123,13 @@ fn main() -> EpsResult<()> {
             },
     );
 
-    // Start debug service for the ground feature
     #[cfg(feature = "ground")]
+    // Start debug service
     Service::new(
         service_config,
-        QueryRoot,
-        MutationRoot,
         socket.as_str().unwrap().to_string(),
         target.as_str().unwrap().to_string(),
+        Some(Arc::new(terminal)),
     )
     .start();
 

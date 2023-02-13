@@ -34,303 +34,172 @@ use juniper::*;
 use serde::*;
 use std::convert::TryFrom;
 
-// Output GQL Structs for conversion，will be re-implemented in CubeOS in future
-// #[derive(Serialize, Deserialize)]
-// pub struct GqlExampleOutput {
-//     gql_out_no: Vec<f64>,
-//     gql_out_str: String,
-//     gql_out_bool: Vec<bool>,
-// }
-// // Translation from Output to GraphQLOutput
-// impl From<ExampleOutput> for GqlExampleOutput {
-//     fn from(o: ExampleOutput) -> GqlExampleOutput {
-//         GqlExampleOutput {
-//             gql_out_no: {
-//                 let mut vec: Vec<f64> = Vec::new();
-//                 for i in 0..o.out_no.len() {
-//                     vec.push(o.out_no[i] as f64 * 1.4);
-//                 }
-//                 vec
-//             },
-//             gql_out_str: o.out_str,
-//             gql_out_bool: o.out_bool,
-//         }
-//     }
-// }
+// Input/Output GQL Structs for conversion 
 
-//SystemStatus
-#[derive(Serialize, Deserialize)]
-pub struct GqlSystemStatus {
-    gql_mode: f64,
-    gql_conf: f64,
-    gql_reset_cause: f64,
-    gql_uptime: f64,
-    gql_error: f64,
-    gql_rc_cnt_pwron: f64,
-    gql_rc_cnt_wdg: f64,
-    gql_rc_cnt_cmd: f64,
-    gql_rc_cnt_mcu: f64,
-    gql_rc_cnt_lowpwr: f64,
-    gql_prevcmd_elapsed: f64,
-    gql_unix_time: f64,
-    gql_unix_year: f64,
-    gql_unix_month: f64,
-    gql_unix_day: f64,
-    gql_unix_hour: f64,
-    gql_unix_minute: f64,
-    gql_unix_second: f64,
+// Only Inputs needed for conversion
+#[derive(GraphQLEnum,Clone)]
+pub enum GqlStID {
+    // Power Distribution Unit System Type Identifier
+    GqlPduStid,
+    // Power Battery Unit System Type Identifier
+    GqlPbuStid,
+    // Power Condition Unit System Type Identifier
+    GqlPcuStid,
+    // Power Intergration unit System Type Identifier
+    GqlPiuStid,
+    // over write System Type Identifier (i.e. Stid = 0x00)
+    GqlOverrideStid,
 }
-
-impl GqlSystemStatus {
-    pub fn from_system_status(system_status: &SystemStatus) -> Self {
-        GqlSystemStatus {
-            gql_mode: system_status.mode as f64,
-            gql_conf: system_status.conf as f64,
-            gql_reset_cause: system_status.reset_cause as f64,
-            gql_uptime: system_status.uptime as f64,
-            gql_error: system_status.error as f64,
-            gql_rc_cnt_pwron: system_status.rc_cnt_pwron as f64,
-            gql_rc_cnt_wdg: system_status.rc_cnt_wdg as f64,
-            gql_rc_cnt_cmd: system_status.rc_cnt_cmd as f64,
-            gql_rc_cnt_mcu: system_status.rc_cnt_mcu as f64,
-            gql_rc_cnt_lowpwr: system_status.rc_cnt_lowpwr as f64,
-            gql_prevcmd_elapsed: system_status.prevcmd_elapsed as f64,
-            gql_unix_time: system_status.unix_time as f64,
-            gql_unix_year: system_status.unix_year as f64,
-            gql_unix_month: system_status.unix_month as f64,
-            gql_unix_day: system_status.unix_day as f64,
-            gql_unix_hour: system_status.unix_hour as f64,
-            gql_unix_minute: system_status.unix_minute as f64,
-            gql_unix_second: system_status.unix_second as f64,
+impl From<isis_eps_api::StID> for GqlStID {
+    fn from(t: isis_eps_api::StID) -> GqlStID {
+        match t {
+            isis_eps_api::StID::PduStid => GqlStID::GqlPduStid,
+            isis_eps_api::StID::PbuStid => GqlStID::GqlPbuStid,
+            isis_eps_api::StID::PcuStid => GqlStID::GqlPcuStid,
+            isis_eps_api::StID::PiuStid => GqlStID::GqlPiuStid,      
+            isis_eps_api::StID::OverrideStid => GqlStID::GqlOverrideStid,                  
         }
     }
 }
 
-//OverCurrentFaultState
-#[derive(Serialize, Deserialize)]
-pub struct GqlOverCurrentFaultState {
-    // One reseved byte. Starting from the 6th byte
-    // Length of useful data for ICEPSv2 (17 channels), 50bytes
-    gql_stat_ch_on: i32,
-    gql_stat_ch_ext_on: i32,
-    gql_stat_ch_ocf: i32,
-    gql_stat_ch_ext_ocf: i32,
-    gql_ocf_cnt_ch00: i32,
-    gql_ocf_cnt_ch01: i32,
-    gql_ocf_cnt_ch02: i32,
-    gql_ocf_cnt_ch03: i32,
-    gql_ocf_cnt_ch04: i32,
-    gql_ocf_cnt_ch05: i32,
-    gql_ocf_cnt_ch06: i32,
-    gql_ocf_cnt_ch07: i32,
-    gql_ocf_cnt_ch08: i32,
-    gql_ocf_cnt_ch09: i32,
-    gql_ocf_cnt_ch10: i32,
-    gql_ocf_cnt_ch11: i32,
-    gql_ocf_cnt_ch12: i32,
-    gql_ocf_cnt_ch13: i32,
-    gql_ocf_cnt_ch14: i32,
-    gql_ocf_cnt_ch15: i32,
-    gql_ocf_cnt_ch16: i32,
+#[derive(GraphQLEnum,Clone)]
+pub enum GqlPDUHkSel {
+    // PDURawHK,
+    GqlPDUEngHK,
+    GqlPDUAvgHK,
 }
-// Translation from Output to GraphQLOutput
-impl GqlOverCurrentFaultState {
-    pub fn from_ocf_state(ocf_state: &OverCurrentFaultState) -> Self {
-        GqlOverCurrentFaultState {
-            gql_stat_ch_on: ocf_state.stat_ch_on as i32,
-            gql_stat_ch_ext_on: ocf_state.stat_ch_ext_on as i32,
-            gql_stat_ch_ocf: ocf_state.stat_ch_ocf as i32,
-            gql_stat_ch_ext_ocf: ocf_state.stat_ch_ext_ocf as i32,
-            gql_ocf_cnt_ch00: ocf_state.ocf_cnt_ch00 as i32,
-            gql_ocf_cnt_ch01: ocf_state.ocf_cnt_ch01 as i32,
-            gql_ocf_cnt_ch02: ocf_state.ocf_cnt_ch02 as i32,
-            gql_ocf_cnt_ch03: ocf_state.ocf_cnt_ch03 as i32,
-            gql_ocf_cnt_ch04: ocf_state.ocf_cnt_ch04 as i32,
-            gql_ocf_cnt_ch05: ocf_state.ocf_cnt_ch05 as i32,
-            gql_ocf_cnt_ch06: ocf_state.ocf_cnt_ch06 as i32,
-            gql_ocf_cnt_ch07: ocf_state.ocf_cnt_ch07 as i32,
-            gql_ocf_cnt_ch08: ocf_state.ocf_cnt_ch08 as i32,
-            gql_ocf_cnt_ch09: ocf_state.ocf_cnt_ch09 as i32,
-            gql_ocf_cnt_ch10: ocf_state.ocf_cnt_ch10 as i32,
-            gql_ocf_cnt_ch11: ocf_state.ocf_cnt_ch11 as i32,
-            gql_ocf_cnt_ch12: ocf_state.ocf_cnt_ch12 as i32,
-            gql_ocf_cnt_ch13: ocf_state.ocf_cnt_ch13 as i32,
-            gql_ocf_cnt_ch14: ocf_state.ocf_cnt_ch14 as i32,
-            gql_ocf_cnt_ch15: ocf_state.ocf_cnt_ch15 as i32,
-            gql_ocf_cnt_ch16: ocf_state.ocf_cnt_ch16 as i32,
+impl From<isis_eps_api::PDUHkSel> for GqlPDUHkSel {
+    fn from(t: isis_eps_api::PDUHkSel) -> GqlPDUHkSel {
+        match t {
+            isis_eps_api::PDUHkSel::PDUEngHK => GqlPDUHkSel::GqlPDUEngHK,
+            isis_eps_api::PDUHkSel::PDUAvgHK => GqlPDUHkSel::GqlPDUAvgHK,
         }
     }
 }
 
 
-//ABFState
-#[derive(Serialize, Deserialize)]
-pub struct GqlABFState {
-    gql_abf_placed_0: bool,
-    gql_abf_placed_1: bool,
+pub enum GqlPBUHkSel {
+    // PBURawHK,
+    GqlPBUEngHK,
+    GqlPBUAvgHK,
 }
-
-impl GqlABFState {
-    pub fn from_abf_state(abf_state: &ABFState) -> Self {
-        GqlABFState {
-            gql_abf_placed_0: abf_state.abf_placed_0 == 0xAB,
-            gql_abf_placed_1: abf_state.abf_placed_1 == 0xAB,
+impl From<isis_eps_api::PBUHkSel> for GqlPBUHkSel {
+    fn from(t: isis_eps_api::PBUHkSel) -> GqlPBUHkSel {
+        match t {
+            isis_eps_api::PBUHkSel::PBUEngHK => GqlPBUHkSel::GqlPBUEngHK,
+            isis_eps_api::PBUHkSel::PBUAvgHK => GqlPBUHkSel::GqlPBUAvgHK,
         }
     }
 }
 
-//GqlVIPData
-#[derive(Serialize, Deserialize)]
-pub struct GqlVIPData {
-    gql_volt: f64,
-    gql_curr: f64,
-    gql_pwr: f64,
+#[derive(GraphQLEnum,Clone)]
+pub enum GqlPCUHkSel {
+    // PCURawHK,
+    GqlPCUEngHK,
+    GqlPCUAvgHK,
 }
-
-impl GqlVIPData {
-    pub fn from_vip_data(vip_data: &VIPData) -> Self {
-        GqlVIPData {
-            gql_volt: vip_data.volt as f64,
-            gql_curr: vip_data.curr as f64,
-            gql_pwr: vip_data.pwr as f64,
+impl From<isis_eps_api::PCUHkSel> for GqlPCUHkSel {
+    fn from(t: isis_eps_api::PCUHkSel) -> GqlPCUHkSel {
+        match t {
+            isis_eps_api::PCUHkSel::PCUEngHK => GqlPCUHkSel::GqlPCUEngHK,
+            isis_eps_api::PCUHkSel::PCUAvgHK => GqlPCUHkSel::GqlPCUAvgHK,
         }
     }
 }
 
-//GqlCondChnShortData
-#[derive(Serialize, Deserialize)]
-pub struct GqlCondChnShortData {
-    gql_volt_in_mppt: f64,
-    gql_curr_in_mppt: f64,
-    gql_volt_out_mppt: f64,
-    gql_curr_out_mppt: f64,
+#[derive(GraphQLEnum,Clone)]
+pub enum GqlPIUHkSel {
+    // PIURawHK,
+    GqlPIUEngHK,
+    GqlPIUAvgHK, 
 }
-
-impl GqlCondChnShortData {
-    pub fn from_cond_chn_short_data(cond_chn_short_data: &CondChnShortData) -> Self {
-        GqlCondChnShortData {
-            gql_volt_in_mppt: cond_chn_short_data.volt_in_mppt as f64,
-            gql_curr_in_mppt: cond_chn_short_data.curr_in_mppt as f64,
-            gql_volt_out_mppt: cond_chn_short_data.volt_out_mppt as f64,
-            gql_curr_out_mppt: cond_chn_short_data.curr_out_mppt as f64,
+impl From<isis_eps_api::PIUHkSel> for GqlPIUHkSel {
+    fn from(t: isis_eps_api::PIUHkSel) -> GqlPIUHkSel {
+        match t {
+            isis_eps_api::PIUHkSel::PIUEngHK => GqlPIUHkSel::GqlPIUEngHK,
+            isis_eps_api::PIUHkSel::PIUAvgHK => GqlPIUHkSel::GqlPIUAvgHK,
         }
     }
 }
 
-#[derive(Serialize, Deserialize)]
-// #[derive(GraphQLObject)]
-pub struct GqlPIUHk {
-    // One reseved byte. Starting from the 6th byte
-    // Voltage of internal board supply.
-    gql_volt_brdsup: i32,
-    // Measured temperature of the MCU
-    gql_temp: i32,
-    // Input V, I and P input of the distribution part of the unit in raw form.
-    gql_vip_dist_input: GqlVIPData,
-    // Input V, I and P input of the battery part of the unit 
-    gql_vip_batt_input: GqlVIPData,
-    // Bitflag field indicating channel-on status for output 0 through 15.
-    gql_stat_ch_on:i32,
-    // Bitflag field indicating overcurrent latch-off fault for output 0 through 15.
-    gql_stat_ch_ocf:i32,
-    // Bitflag field indicating BP board status.
-    gql_batt_stat:i32,
-    // 2 and 4 cell battery pack
-    gql_batt_temp2:i32,
-    // 2 cell battery pack not used, temp for 4 cell battery pack:
-    gql_batt_temp3:i32,
-    // Voltage level for domain 0 - 2
-    gql_volt_vd0:i32,
-    gql_volt_vd1:i32,
-    gql_volt_vd2:i32,
-    // GqlVIPData output for channel 0 - 16
-    // VD0_0, 3.3V
-    gql_vip_cnt_ch00: GqlVIPData,
-    // VD1_0, 5V
-    gql_vip_cnt_ch01: GqlVIPData,
-    // VD1_1, 5V
-    gql_vip_cnt_ch02: GqlVIPData,
-    // VD1_2, 5V
-    gql_vip_cnt_ch03: GqlVIPData,
-    // VD1_3, 3.3V
-    gql_vip_cnt_ch04: GqlVIPData,
-    // VD2_0, 3.3V
-    gql_vip_cnt_ch05: GqlVIPData,
-    // VD2_1, 3.3V
-    gql_vip_cnt_ch06: GqlVIPData,
-    // VD2_2, 3.3V
-    gql_vip_cnt_ch07: GqlVIPData,
-    // VD2_3, 3.3V
-    gql_vip_cnt_ch08: GqlVIPData,
-    // Data on conditioning chain
-    gql_ccd1: GqlCondChnShortData,
-    gql_ccd2: GqlCondChnShortData,
-    gql_ccd3: GqlCondChnShortData,
-    // VD0_1, 3.3V 
-    gql_vip_cnt_ch09: GqlVIPData,
-    // VD0_2, 3.3V    
-    gql_vip_cnt_ch10: GqlVIPData,
-    // VD0_3, 3.3V    
-    gql_vip_cnt_ch11: GqlVIPData,
-    // VD3_0, 5.4V (customized)
-    gql_vip_cnt_ch12: GqlVIPData,
-    // VD3_1, 5.4V (customized)
-    gql_vip_cnt_ch13: GqlVIPData,
-    // VD4_0, 12V (customized)
-    gql_vip_cnt_ch14: GqlVIPData,
-    // VD4_1, 12V (customized)
-    gql_vip_cnt_ch15: GqlVIPData,
-    // Data on conditioning chain 
-    gql_ccd4: GqlCondChnShortData,
-    gql_ccd5: GqlCondChnShortData,
-    // Bitflag field indicating channel-on status for the extended output bus channels
-    gql_stat_ch_ext_on: i32,
-    // Bitflag field indicating overcurrent latch-off fault status for the extended output bus channels
-    gql_stat_ch_ext_ocf: i32,
-    // VD5_0, 28.2V (default)
-    gql_vip_cnt_ch16: i32,
-    // Stop at 184 byte for the ICEPSv2
+#[derive(GraphQLEnum,Clone)]
+pub enum GqlBusGroup {
+    GqlBusGroupOn,
+    GqlBusGroupOff,
+    GqlBusGroupState,
 }
-
-impl GqlPIUHk {
-    pub fn from_piu_hk(piu_hk: &PIUHk) -> Self {
-        GqlPIUHk {
-            gql_volt_brdsup: piu_hk.volt_brdsup as f64,
-            gql_temp: piu_hk.temp as f64,
-            gql_vip_dist_input: GqlVIPData::from_vip_data(&piu_hk.vip_dist_input),
-            gql_vip_batt_input: GqlVIPData::from_vip_data(&piu_hk.vip_batt_input),
-            gql_stat_ch_on: piu_hk.stat_ch_on as f64,
-            gql_stat_ch_ocf: piu_hk.stat_ch_ocf as f64,
-            gql_batt_stat: piu_hk.batt_stat as f64,
-            gql_batt_temp2: piu_hk.batt_temp2 as f64,
-            gql_batt_temp3: piu_hk.batt_temp3 as f64,
-            gql_volt_vd0: piu_hk.volt_vd0 as f64,
-            gql_volt_vd1: piu_hk.volt_vd1 as f64,
-            gql_volt_vd2: piu_hk.volt_vd2 as f64,
-            gql_vip_cnt_ch00: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch00),
-            gql_vip_cnt_ch01: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch01),
-            gql_vip_cnt_ch02: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch02),
-            gql_vip_cnt_ch03: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch03),
-            gql_vip_cnt_ch04: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch04),
-            gql_vip_cnt_ch05: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch05),
-            gql_vip_cnt_ch06: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch06),
-            gql_vip_cnt_ch07: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch07),
-            gql_vip_cnt_ch08: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch08),
-            gql_ccd1: GqlCondChnShortData::from_cond_chn_short_data(&piu_hk.ccd1),
-            gql_ccd2: GqlCondChnShortData::from_cond_chn_short_data(&piu_hk.ccd2),
-            gql_ccd3: GqlCondChnShortData::from_cond_chn_short_data(&piu_hk.ccd3),
-            gql_vip_cnt_ch09: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch09),
-            gql_vip_cnt_ch10: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch10),
-            gql_vip_cnt_ch11: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch11),
-            gql_vip_cnt_ch12: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch12),
-            gql_vip_cnt_ch13: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch13),
-            gql_vip_cnt_ch14: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch14),
-            gql_vip_cnt_ch15: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch15),
-            gql_ccd4: GqlCondChnShortData::from_cond_chn_short_data(&piu_hk.ccd4),
-            gql_ccd5: GqlCondChnShortData::from_cond_chn_short_data(&piu_hk.ccd5),
-            gql_stat_ch_ext_on: piu_hk.stat_ch_ext_on as i32,
-            gql_stat_ch_ext_ocf: piu_hk.stat_ch_ext_ocf as i32,
-            gql_vip_cnt_ch16: GqlVIPData::from_vip_data(&piu_hk.vip_cnt_ch16),
+impl From<isis_eps_api::BusGroup> for GqlBusGroup {
+    fn from(t: isis_eps_api::BusGroup) -> GqlBusGroup {
+        match t {
+            isis_eps_api::BusGroup::BusGroupOn => GqlBusGroup::GqlBusGroupOn,
+            isis_eps_api::BusGroup::BusGroupOff => GqlBusGroup::GqlBusGroupOff,
+            isis_eps_api::BusGroup::BusGroupState => GqlBusGroup::GqlBusGroupState,
         }
     }
 }
+
+// Output GqlBus Channel
+// #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(GraphQLEnum,Clone)]
+pub enum GqlBusChannel {
+    GqlChannelOn,
+    GqlChannelOff,
+}
+impl From<isis_eps_api::BusChannel> for GqlBusChannel {
+    fn from(t: isis_eps_api::BusChannel) -> GqlBusChannel {
+        match t {
+            isis_eps_api::BusChannel::ChannelOn => GqlBusChannel::GqlChannelOn,
+            isis_eps_api::BusChannel::ChannelOff => GqlBusChannel::GqlChannelOff,
+        }
+    }
+}
+
+
+// Used in ModeSwitch (0x30/0x31)
+// #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(GraphQLEnum,Clone)]
+pub enum GqlModeSwitch {
+    GqlNominal,
+    GqlSafety,
+}
+impl From<isis_eps_api::ModeSwitch> for GqlModeSwitch {
+    fn from(t: isis_eps_api::ModeSwitch) -> GqlModeSwitch {
+        match t {
+            isis_eps_api::ModeSwitch::Nominal => GqlModeSwitch::GqlNominal,
+            isis_eps_api::ModeSwitch::Safety => GqlModeSwitch::GqlSafety,
+        }
+    }
+}
+
+#[derive(GraphQLEnum,Clone)]
+pub enum GqlSysConfig1 {
+    GqlGetConfigParam, 
+    GqlSetConfigParam, 
+    GqlResetConfigParam,
+}
+impl From<isis_eps_api::SysConfig1> for GqlSysConfig1 {
+    fn from(t: isis_eps_api::SysConfig1) -> GqlSysConfig1 {
+        match t {
+            isis_eps_api::SysConfig1::GetConfigParam => GqlSysConfig1::GqlGetConfigParam,
+            isis_eps_api::SysConfig1::SetConfigParam => GqlSysConfig1::GqlSetConfigParam,
+            isis_eps_api::SysConfig1::ResetConfigParam => GqlSysConfig1::GqlResetConfigParam,
+        }
+    }
+}
+
+#[derive(GraphQLEnum,Clone)]
+pub enum GqlSysConfig2 {
+    GqlResetAll, 
+    GqlLoadConfig, 
+    GqlSaveConfig, 
+}
+impl From<isis_eps_api::SysConfig2> for GqlSysConfig2 {
+    fn from(t: isis_eps_api::SysConfig2) -> GqlSysConfig2 {
+        match t {
+            isis_eps_api::SysConfig2::ResetAll => GqlSysConfig2::GqlResetAll,
+            isis_eps_api::SysConfig2::LoadConfig => GqlSysConfig2::GqlLoadConfig,
+            isis_eps_api::SysConfig2::SaveConfig => GqlSysConfig2::GqlSaveConfig,
+        }
+    }
+}
+// OUTPUT
