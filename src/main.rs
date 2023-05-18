@@ -110,7 +110,7 @@ fn main() -> EpsResult<()> {
 
     #[cfg(not(feature = "ground"))]
     let subsystem: Box<Subsystem> = Box::new(
-        match Subsystem::new(i2c_bus, i2c_addr, udp_path, udp_to)
+        match Subsystem::new(i2c_bus, i2c_addr)
             .map_err(|err| {
                 error!("Failed to create subsystem: {:?}", err);
                 err

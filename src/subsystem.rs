@@ -53,9 +53,9 @@ impl Subsystem {
     ///
     /// *  EpsResult<Self>` - Returns `Self` or EpsError.
     /// 
-    pub fn new(i2c_path: String, i2c_addr: u16, udp_path: String, udp_to: String) -> EpsResult<Self> {
+    pub fn new(i2c_path: String, i2c_addr: u16) -> EpsResult<Self> {
         Ok(Self {
-            eps: Arc::new(Mutex::new(EPS::new(i2c_path, i2c_addr, udp_path, udp_to)?)),
+            eps: Arc::new(Mutex::new(EPS::new(i2c_path, i2c_addr)?)),
             last_cmd: Arc::new(RwLock::new(Vec::new())),
             last_err: Arc::new(RwLock::new(Error::None)),
         })
