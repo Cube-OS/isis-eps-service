@@ -20,7 +20,7 @@
 // Comments generated in parts with GPT-3 (see disclaimer in README)
 
 // use std::convert::From;
-use cubeos_error::{Error, Result};
+use cubeos_service::{Error, Result};
 use isis_eps_api::*;  
 use cubeos_service::*;
 // include output of macro in cubeos_service

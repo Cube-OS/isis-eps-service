@@ -18,7 +18,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use std::str::FromStr;
 use serial::*;
-use cubeos_error::{Error,Result};
+use cubeos_service::{Error,Result};
 use std::convert::TryFrom;
 use std::convert::From;
 use log::{info,error};

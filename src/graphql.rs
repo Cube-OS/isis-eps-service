@@ -27,7 +27,7 @@ use std::time::Duration;
 use std::sync::{Arc,Mutex,RwLock};
 use std::convert::From;
 use isis_eps_api::*; // move to CubeOS git
-use cubeos_error::{Error as CubeOSError, Result as CubeOSResult};
+use cubeos_service::{Error as CubeOSError, Result as CubeOSResult};
 use cubeos_service::*;
 use cubeos_service::{Config,Service};
 use juniper::*;
