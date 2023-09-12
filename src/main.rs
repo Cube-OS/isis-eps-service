@@ -1,13 +1,10 @@
 // This is the service module for the ISIS Compact EPS
 
-#[cfg(feature = "ground")]
-pub mod graphql;
 pub mod service;
 pub mod subsystem;
 
 // include API
 use isis_eps_api::*;  
-// use cubeos_service::{Config,Service};
 
 use cubeos_service::*;
 
@@ -24,10 +21,6 @@ use std::convert::From;
 use log::{info,error};
 use failure::format_err;
 
-// use std::sync::{Arc,Mutex,RwLock};
-// use juniper::*;
-// use serde::*;
-
 // -------------------------main.rs---------------------------------
 fn main() -> EpsResult<()> {
     let service_config = Config::new("isis-eps-service")
@@ -38,7 +31,7 @@ fn main() -> EpsResult<()> {
     .unwrap();
 
     // Define i2c bus 
-    #[cfg(not(feature = "ground"))]
+    #[cfg(not(any(feature = "ground",feature = "terminal")))]
     let i2c_bus = service_config
         .get("i2c_bus")
         .ok_or_else(|| {
@@ -46,11 +39,11 @@ fn main() -> EpsResult<()> {
             format_err!("Failed to load 'i2c_bus' config value");
         })
         .unwrap();
-    #[cfg(not(feature = "ground"))]
+    #[cfg(not(any(feature = "ground",feature = "terminal")))]
     let i2c_bus = i2c_bus.as_str().unwrap().to_string();
 
     // Define the i2c_bus address in hex. Works with or without 0x. 
-    #[cfg(not(feature = "ground"))]
+    #[cfg(not(any(feature = "ground",feature = "terminal")))]
     let i2c_addr = service_config
     .get("i2c_addr")
     .ok_or_else(|| {
@@ -58,9 +51,9 @@ fn main() -> EpsResult<()> {
         format_err!("Failed to load 'i2c_addr' config value");
     })
     .unwrap();
-    #[cfg(not(feature = "ground"))]
+    #[cfg(not(any(feature = "ground",feature = "terminal")))]
     let i2c_addr = i2c_addr.as_str().unwrap();
-    #[cfg(not(feature = "ground"))]
+    #[cfg(not(any(feature = "ground",feature = "terminal")))]
     let i2c_addr: u16 = if i2c_addr.starts_with("0x") {
         u16::from_str_radix(&i2c_addr[2..], 16).unwrap()
     } else {
@@ -90,7 +83,7 @@ fn main() -> EpsResult<()> {
         .to_string();
     
     // Only needed for the ground feature
-    #[cfg(feature = "ground")]
+    #[cfg(any(feature = "ground",feature = "terminal"))]
     let socket = service_config
         .get("udp_socket")
         .ok_or_else(|| {
@@ -99,7 +92,7 @@ fn main() -> EpsResult<()> {
         })
         .unwrap();
 
-    #[cfg(feature = "ground")]
+    #[cfg(any(feature = "ground",feature = "terminal"))]
     let target = service_config
         .get("target")
         .ok_or_else(|| {
@@ -108,7 +101,7 @@ fn main() -> EpsResult<()> {
         })
         .unwrap();    
 
-    #[cfg(not(feature = "ground"))]
+    #[cfg(not(any(feature = "ground",feature = "terminal")))]
     let subsystem: Box<Subsystem> = Box::new(
         match Subsystem::new(i2c_bus, i2c_addr)
             .map_err(|err| {
@@ -123,7 +116,7 @@ fn main() -> EpsResult<()> {
             },
     );
 
-    #[cfg(feature = "ground")]
+    #[cfg(feature = "terminal")]
     // Start debug service
     Service::new(
         service_config,
@@ -133,8 +126,18 @@ fn main() -> EpsResult<()> {
     )
     .start();
 
+    #[cfg(feature = "ground")]
+    // Start debug service
+    Service::new(
+        service_config,
+        socket.as_str().unwrap().to_string(),
+        target.as_str().unwrap().to_string(),
+        Some(Arc::new(json_handler)),
+    )
+    .start();
+
     //Start up UDP server for the Satellite
-     #[cfg(not(feature = "ground"))]
+     #[cfg(not(any(feature = "terminal", feature = "ground")))]
     Service::new(
         service_config,
         subsystem,
