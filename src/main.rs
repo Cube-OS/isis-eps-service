@@ -83,7 +83,7 @@ fn main() -> EpsResult<()> {
         .to_string();
     
     // Only needed for the ground feature
-    #[cfg(any(feature = "ground",feature = "terminal"))]
+    #[cfg(any(feature = "ground",feature = "terminal", feature = "gs-auto", feature = "gs-schedule"))]
     let socket = service_config
         .get("udp_socket")
         .ok_or_else(|| {
@@ -92,7 +92,7 @@ fn main() -> EpsResult<()> {
         })
         .unwrap();
 
-    #[cfg(any(feature = "ground",feature = "terminal"))]
+    #[cfg(any(feature = "ground",feature = "terminal", feature = "gs-auto", feature = "gs-schedule"))]
     let target = service_config
         .get("target")
         .ok_or_else(|| {
@@ -136,8 +136,25 @@ fn main() -> EpsResult<()> {
     )
     .start();
 
+    #[cfg(feature = "gs-auto")]
+    // Start gs-auto service
+    Service::new(
+        service_config,
+        socket.as_str().unwrap().to_string(),
+        target.as_str().unwrap().to_string(),
+        std::env::args().collect::<Vec<String>>(),
+        Some(Arc::new(handler)),
+    ).start();
+
+    #[cfg(feature = "gs-schedule")]
+    // Start gs-schedule service
+    Service::new(
+        service_config,
+        Some(Arc::new(terminal)),
+    ).start();
+
     //Start up UDP server for the Satellite
-     #[cfg(not(any(feature = "terminal", feature = "ground")))]
+     #[cfg(not(any(feature = "terminal", feature = "ground", feature = "gs-auto", feature = "gs-schedule")))]
     Service::new(
         service_config,
         subsystem,

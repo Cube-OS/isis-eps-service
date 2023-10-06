@@ -34,7 +34,7 @@ use isis_eps_api::*;
 service_macro! {
     use isis_eps_api::EpsError;
     subsystem::Subsystem{ 
-        query: EpsPing => fn eps_ping(&self) -> Result<()>;
+        query: EpsPing => fn eps_ping(&self) -> Result<()>; out: ();
         query: SystemStatus => fn system_status(&self) -> Result<SystemStatus>; out: SystemStatus;
         query: OvercurrentState => fn overcurrent_state(&self) -> Result<OverCurrentFaultState>; out: OverCurrentFaultState;
         // query: AbfState => fn abf_state(&self) -> Result<ABFState>; out: ABFState;
