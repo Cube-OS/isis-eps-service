@@ -76,7 +76,7 @@ impl Subsystem {
         Ok(self.eps.lock().unwrap().watchdog_reset()?)
     }
 
-    pub fn set_group_outputs(&self, typ_group: BusGroup, channels: BusChannelState) -> EpsResult<()> {
+    pub fn set_group_outputs(&self, typ_group: BusGroup, channels: Vec<u8>) -> EpsResult<()> {
         Ok(self.eps.lock().unwrap().set_group_outputs(typ_group, channels)?)
     }
 

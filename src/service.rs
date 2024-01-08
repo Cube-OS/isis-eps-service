@@ -30,18 +30,17 @@ use isis_eps_api::*;
 // (e.g. Payload telemetry returns a Vec<u8>, but resembles analog data like Voltage,Current,Temperature etc.)
 // If GraphQLInput/Output are not needed then please set to Input and Output of function
 
-// Note that Service Ping, GetLastError, GetLastMutation are already inculded in the CubeOS-Service           
 service_macro! {
     use isis_eps_api::EpsError;
     subsystem::Subsystem{ 
         query: EpsPing => fn eps_ping(&self) -> Result<()>; out: ();
-        query: SystemStatus => fn system_status(&self) -> Result<SystemStatus>; out: SystemStatus;
+        query: Status => fn system_status(&self) -> Result<SystemStatus>; out: SystemStatus;
         query: OvercurrentState => fn overcurrent_state(&self) -> Result<OverCurrentFaultState>; out: OverCurrentFaultState;
         // query: AbfState => fn abf_state(&self) -> Result<ABFState>; out: ABFState;
-        query: PduHk => fn pdu_hk(&self, mode: PDUHkSel) -> Result<PDUHk>; out: PDUHk;
-        query: PbuHk => fn pbu_hk(&self, mode: PBUHkSel) -> Result<PBUHk>; out: PBUHk;
+        // query: PduHk => fn pdu_hk(&self, mode: PDUHkSel) -> Result<PDUHk>; out: PDUHk;
+        // query: PbuHk => fn pbu_hk(&self, mode: PBUHkSel) -> Result<PBUHk>; out: PBUHk;
         query: PiuHk => fn piu_hk(&self, mode: PIUHkSel) -> Result<PIUHk>; out: PIUHk;
-        query: PcuHk => fn pcu_hk(&self, mode: PCUHkSel) -> Result<PCUHk>; out: PCUHk;
+        // query: PcuHk => fn pcu_hk(&self, mode: PCUHkSel) -> Result<PCUHk>; out: PCUHk;
         query: GetConfigParamWrite => fn get_config_para_write(&self, param: ConfigParamWrite) -> EpsResult<Output>; out: Output;
         query: GetConfigParamRead => fn get_config_para_read(&self, param: ConfigParamRead) -> EpsResult<Output>; out: Output;
         query: SetConfigParamU32 => fn set_config_para_u32(&self, param: ConfigParamWriteU32, value: u32) -> EpsResult<Output>; out: Output;
@@ -53,7 +52,7 @@ service_macro! {
         mutation: SysReset => fn sys_reset(&self, ret_key: u8) -> Result<()>;
         mutation: ShutDownAll =>fn shutdown_all(&self) -> EpsResult<()>;
         mutation: WatchdogReset => fn watchdog_reset(&self) -> EpsResult<()>;
-        mutation: SetGroupOutputs => fn set_group_outputs(&self, typ_group: BusGroup, channels: BusChannelState) -> EpsResult<()>;
+        mutation: SetGroupOutputs => fn set_group_outputs(&self, typ_group: BusGroup, channels: Vec<u8>) -> EpsResult<()>;
         mutation: SetSingleOutput => fn set_single_output(&self, typ_channel: BusChannel, eps_ch_idx: u8) -> EpsResult<()>;
         mutation: ModeSwitchFn => fn mode_switch(&self, mode: ModeSwitch) -> EpsResult<()>;
         mutation: CorrectTime => fn correct_time(&self, time_correction: i32) -> EpsResult<()>;
