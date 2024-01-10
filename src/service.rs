@@ -52,6 +52,7 @@ service_macro! {
         mutation: SysReset => fn sys_reset(&self, ret_key: u8) -> Result<()>;
         mutation: ShutDownAll =>fn shutdown_all(&self) -> EpsResult<()>;
         mutation: WatchdogReset => fn watchdog_reset(&self) -> EpsResult<()>;
+        mutation: SetGroupState => fn set_group_state(&self, typ_group: BusGroup, state: BusChannelState) -> EpsResult<()>;
         mutation: SetGroupOutputs => fn set_group_outputs(&self, typ_group: BusGroup, channels: Vec<u8>) -> EpsResult<()>;
         mutation: SetSingleOutput => fn set_single_output(&self, typ_channel: BusChannel, eps_ch_idx: u8) -> EpsResult<()>;
         mutation: ModeSwitchFn => fn mode_switch(&self, mode: ModeSwitch) -> EpsResult<()>;

@@ -80,6 +80,10 @@ impl Subsystem {
         Ok(self.eps.lock().unwrap().set_group_outputs(typ_group, channels)?)
     }
 
+    pub fn set_group_state(&self, typ_group: BusGroup, state: BusChannelState) -> EpsResult<()> {
+        Ok(self.eps.lock().unwrap().set_group_state(typ_group, state)?)
+    }
+
     pub fn set_single_output(&self, typ_channel: BusChannel, eps_ch_idx: u8) -> EpsResult<()> {
         Ok(self.eps.lock().unwrap().set_single_output(typ_channel, eps_ch_idx)?)
     }
