@@ -31,7 +31,7 @@ fn main() -> EpsResult<()> {
     .unwrap();
 
     // Define i2c bus 
-    #[cfg(not(any(feature = "ground",feature = "terminal")))]
+    #[cfg(not(feature = "terminal"))]
     let i2c_bus = service_config
         .get("i2c_bus")
         .ok_or_else(|| {
@@ -39,11 +39,11 @@ fn main() -> EpsResult<()> {
             format_err!("Failed to load 'i2c_bus' config value");
         })
         .unwrap();
-    #[cfg(not(any(feature = "ground",feature = "terminal")))]
+    #[cfg(not(feature = "terminal"))]
     let i2c_bus = i2c_bus.as_str().unwrap().to_string();
 
     // Define the i2c_bus address in hex. Works with or without 0x. 
-    #[cfg(not(any(feature = "ground",feature = "terminal")))]
+    #[cfg(not(feature = "terminal"))]
     let i2c_addr = service_config
     .get("i2c_addr")
     .ok_or_else(|| {
@@ -51,39 +51,17 @@ fn main() -> EpsResult<()> {
         format_err!("Failed to load 'i2c_addr' config value");
     })
     .unwrap();
-    #[cfg(not(any(feature = "ground",feature = "terminal")))]
+    #[cfg(not(feature = "terminal"))]
     let i2c_addr = i2c_addr.as_str().unwrap();
-    #[cfg(not(any(feature = "ground",feature = "terminal")))]
+    #[cfg(not(feature = "terminal"))]
     let i2c_addr: u16 = if i2c_addr.starts_with("0x") {
         u16::from_str_radix(&i2c_addr[2..], 16).unwrap()
     } else {
         u16::from_str_radix(i2c_addr, 16).unwrap()
     };
-
-    let udp_path = service_config
-        .get("udp_path")
-        .ok_or_else(|| {
-            error!("Failed to load 'udp-patch' config value");
-            format_err!("Failed to load 'udp-socket' config value");
-        })
-        .unwrap()
-        .as_str()
-        .unwrap()
-        .to_string();
-
-    let udp_to = service_config
-        .get("udp_to")
-        .ok_or_else(|| {
-            error!("Failed to load 'target' config value");
-            format_err!("Failed to load 'target' config value");
-        })
-        .unwrap()
-        .as_str()
-        .unwrap()
-        .to_string();
     
     // Only needed for the ground feature
-    #[cfg(any(feature = "ground",feature = "terminal", feature = "gs-auto", feature = "gs-schedule"))]
+    #[cfg(feature = "terminal")]
     let socket = service_config
         .get("udp_socket")
         .ok_or_else(|| {
@@ -92,7 +70,7 @@ fn main() -> EpsResult<()> {
         })
         .unwrap();
 
-    #[cfg(any(feature = "ground",feature = "terminal", feature = "gs-auto", feature = "gs-schedule"))]
+    #[cfg(feature = "terminal")]
     let target = service_config
         .get("target")
         .ok_or_else(|| {
@@ -101,7 +79,7 @@ fn main() -> EpsResult<()> {
         })
         .unwrap();    
 
-    #[cfg(not(any(feature = "ground",feature = "terminal")))]
+    #[cfg(not(feature = "terminal"))]
     let subsystem: Box<Subsystem> = Box::new(
         match Subsystem::new(i2c_bus, i2c_addr)
             .map_err(|err| {
@@ -117,40 +95,14 @@ fn main() -> EpsResult<()> {
     );
 
     #[cfg(feature = "terminal")]
-    // Start debug service
-    Service::new(
-        service_config,
-        socket.as_str().unwrap().to_string(),
-        target.as_str().unwrap().to_string(),
-        Some(Arc::new(terminal)),
-    )
-    .start();
-
-    #[cfg(feature = "ground")]
-    // Start debug service
-    Service::new(
-        service_config,
-        socket.as_str().unwrap().to_string(),
-        target.as_str().unwrap().to_string(),
-        Some(Arc::new(json_handler)),
-    )
-    .start();
-
-    #[cfg(feature = "gs-auto")]
     // Start gs-auto service
     Service::new(
         service_config,
         socket.as_str().unwrap().to_string(),
         target.as_str().unwrap().to_string(),
         std::env::args().collect::<Vec<String>>(),
-        Some(Arc::new(handler)),
-    ).start();
-
-    #[cfg(feature = "gs-schedule")]
-    // Start gs-schedule service
-    Service::new(
-        service_config,
-        Some(Arc::new(terminal)),
+        Arc::new(input),
+        Arc::new(output),
     ).start();
 
     //Start up UDP server for the Satellite

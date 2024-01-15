@@ -18,7 +18,4 @@ log = "0.4.8"
 [features]
 default = ['cubeos-service/default']
 terminal = ['cubeos-service/terminal']
-ground = ['cubeos-service/ground']
 debug = ['cubeos-service/debug']
-gs-auto = ['cubeos-service/gs-auto']
-gs-schedule = ['cubeos-service/gs-schedule']
