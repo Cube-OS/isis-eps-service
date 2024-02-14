@@ -118,6 +118,7 @@ dependencies = [
 [[package]]
 name = "cubeos-service"
 version = "0.4.0"
+source = "git+ssh://git@github.com/Cube-OS/cubeos-service.git#054d9fbad588ff3fb85758760b80edf56f538a2f"
 dependencies = [
  "bincode",
  "dialoguer",
@@ -307,12 +308,12 @@ dependencies = [
 [[package]]
 name = "isis-eps-api"
 version = "0.1.0"
+source = "git+ssh://git@github.com/Cube-OS/isis-eps-api.git#bca826ea27745e798484ec78aea8fa1d187fe3b5"
 dependencies = [
  "cubeos-service",
  "failure",
  "i2c-rs",
  "serde",
- "serde_json",
  "strum",
  "strum_macros",
 ]
@@ -338,12 +339,12 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 [[package]]
 name = "kubos-system"
 version = "0.1.0"
+source = "git+ssh://git@github.com/Cube-OS/system-api.git#2987e77c14fb9fa6c49b2d1498780de063cafd2d"
 dependencies = [
  "failure",
  "log",
  "serde",
  "serde_derive",
- "simplelog",
  "syslog",
  "toml",
 ]
@@ -638,17 +639,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "24188a676b6ae68c3b2cb3a01be17fbf7240ce009799bb56d5b1409051e78fde"
 
 [[package]]
-name = "simplelog"
-version = "0.12.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "acee08041c5de3d5048c8b3f6f13fafb3026b24ba43c6a695a0c76179b844369"
-dependencies = [
- "log",
- "termcolor",
- "time",
-]
-
-[[package]]
 name = "strum"
 version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -757,17 +747,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "termcolor"
-version = "1.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bab24d30b911b2376f3a13cc2cd443142f0c81dda04c118693e35b3835757755"
-dependencies = [
- "winapi-util",
-]
-
-[[package]]
 name = "terminal-macro"
 version = "0.1.0"
+source = "git+ssh://git@github.com/Cube-OS/terminal-macro#6ad397b993f0e1c20592ea1011efd6c139ba4794"
 dependencies = [
  "cargo_metadata",
  "proc-macro2",
@@ -931,15 +913,6 @@ name = "winapi-i686-pc-windows-gnu"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ac3b87c63620426dd9b991e5ce0329eff545bccbbb34f3be09ff6fb6ab51b7b6"
-
-[[package]]
-name = "winapi-util"
-version = "0.1.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f29e6f9198ba0d26b4c9f07dbe6f9ed633e1f3d5b8b414090084349e46a52596"
-dependencies = [
- "winapi",
-]
 
 [[package]]
 name = "winapi-x86_64-pc-windows-gnu"

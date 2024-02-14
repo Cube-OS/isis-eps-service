@@ -19,14 +19,14 @@
 //
 // Comments generated in parts with GPT-3 (see disclaimer in README)
 
-use cubeos_service::{Error, Result};
+use cubeos_service::{Error};
 use isis_eps_api::*;  
 use cubeos_service::*;
 // include output of macro in cubeos_service
-use crate::service::*;
+
 use std::sync::{Arc, Mutex, RwLock};
-use std::time::Duration;
-use serde::*;
+
+
 
 const PIU_STID: u8 = 0x1A;
 
@@ -63,7 +63,7 @@ impl Subsystem {
         Ok(self.eps.lock().unwrap().eps_ping()?)
     }
 
-    pub fn sys_reset(&self, ret_key: u8) -> EpsResult<()> {
+    pub fn sys_reset(&self, _ret_key: u8) -> EpsResult<()> {
         let ret_key = 0xA6;
         Ok(self.eps.lock().unwrap().sys_reset(ret_key)?)
     }
