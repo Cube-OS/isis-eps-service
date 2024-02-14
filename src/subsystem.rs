@@ -19,16 +19,11 @@
 //
 // Comments generated in parts with GPT-3 (see disclaimer in README)
 
+use std::sync::{Arc, Mutex, RwLock};
 use cubeos_service::{Error};
 use isis_eps_api::*;  
-use cubeos_service::*;
+
 // include output of macro in cubeos_service
-
-use std::sync::{Arc, Mutex, RwLock};
-
-
-
-const PIU_STID: u8 = 0x1A;
 
 #[derive(Clone)]
 pub struct Subsystem {
