@@ -6,10 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-# isis-eps-api = { git = "ssh://git@github.com/Cube-OS/isis-eps-api.git" }
-isis-eps-api = { path = "../isis-eps-api" }
-# cubeos-service = { git = "ssh://git@github.com/Cube-OS/cubeos-service.git"}
-cubeos-service = { path = "../../cubeos-service" }
+isis-eps-api = { git = "ssh://git@github.com/Cube-OS/isis-eps-api.git" }
+cubeos-service = { git = "ssh://git@github.com/Cube-OS/cubeos-service.git"}
 serde = "1.0"
 serial = "0.4.0"
 failure = "0.1.4"
