@@ -24,11 +24,11 @@ use failure::format_err;
 // -------------------------main.rs---------------------------------
 fn main() -> EpsResult<()> {
     let service_config = Config::new("isis-eps-service")
-    .map_err(|err| {
-        error!("Failed to load service config: {:?}", err);
-        err
-    })
-    .unwrap();
+        .map_err(|err| {
+            error!("Failed to load service config: {:?}", err);
+            err
+        })
+        .unwrap();
 
     // Define i2c bus 
     #[cfg(not(feature = "terminal"))]

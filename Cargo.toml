@@ -19,3 +19,10 @@ log = "0.4.8"
 default = ['cubeos-service/default']
 terminal = ['cubeos-service/terminal']
 debug = ['cubeos-service/debug']
+
+[profile.release]
+strip = true
+lto = true
+opt-level = "z"
+panic = "abort"
+codegen-units = 1

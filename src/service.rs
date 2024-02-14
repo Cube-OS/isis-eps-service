@@ -19,7 +19,7 @@
 // It enables the communication via UDP or GraphQL (depending on --features flag during compilation)
 
 use cubeos_service::*;
-use isis_eps_api::*;  
+use isis_eps_api::*;
 
 // Macro to create UDP-handler function or GraphQL Queries and Mutations
 // The layout follows the rules:
