@@ -4,22 +4,17 @@ pub mod service;
 pub mod subsystem;
 
 // include API
-use isis_eps_api::*;  
+use isis_eps_api::*;
 
 use cubeos_service::*;
 
-use crate::subsystem::Subsystem;
 use crate::service::*;
+use crate::subsystem::Subsystem;
 
 use std::sync::Arc;
 
-
-
-
-
-
-use log::{info,error};
 use failure::format_err;
+use log::{error, info};
 
 // -------------------------main.rs---------------------------------
 fn main() -> EpsResult<()> {
@@ -30,7 +25,7 @@ fn main() -> EpsResult<()> {
         })
         .unwrap();
 
-    // Define i2c bus 
+    // Define i2c bus
     #[cfg(not(feature = "terminal"))]
     let i2c_bus = service_config
         .get("i2c_bus")
@@ -42,15 +37,15 @@ fn main() -> EpsResult<()> {
     #[cfg(not(feature = "terminal"))]
     let i2c_bus = i2c_bus.as_str().unwrap().to_string();
 
-    // Define the i2c_bus address in hex. Works with or without 0x. 
+    // Define the i2c_bus address in hex. Works with or without 0x.
     #[cfg(not(feature = "terminal"))]
     let i2c_addr = service_config
-    .get("i2c_addr")
-    .ok_or_else(|| {
-        error!("Failed to load 'i2c_addr' config value");
-        format_err!("Failed to load 'i2c_addr' config value");
-    })
-    .unwrap();
+        .get("i2c_addr")
+        .ok_or_else(|| {
+            error!("Failed to load 'i2c_addr' config value");
+            format_err!("Failed to load 'i2c_addr' config value");
+        })
+        .unwrap();
     #[cfg(not(feature = "terminal"))]
     let i2c_addr = i2c_addr.as_str().unwrap();
     #[cfg(not(feature = "terminal"))]
@@ -59,7 +54,7 @@ fn main() -> EpsResult<()> {
     } else {
         u16::from_str_radix(i2c_addr, 16).unwrap()
     };
-    
+
     // Only needed for the ground feature
     #[cfg(feature = "terminal")]
     let socket = service_config
@@ -77,21 +72,20 @@ fn main() -> EpsResult<()> {
             error!("Failed to load 'target' config value");
             format_err!("Failed to load 'target' config value");
         })
-        .unwrap();    
+        .unwrap();
 
     #[cfg(not(feature = "terminal"))]
     let subsystem: Box<Subsystem> = Box::new(
-        match Subsystem::new(i2c_bus, i2c_addr)
-            .map_err(|err| {
-                error!("Failed to create subsystem: {:?}", err);
-                err
-            }) {
-                Ok(b) => b,
-                Err(e) => {
-                    info!("Failed to create subsystem");
-                    panic!("Subsystem creation failed: {:?}", e);
-                }
-            },
+        match Subsystem::new(i2c_bus, i2c_addr).map_err(|err| {
+            error!("Failed to create subsystem: {:?}", err);
+            err
+        }) {
+            Ok(b) => b,
+            Err(e) => {
+                info!("Failed to create subsystem");
+                panic!("Subsystem creation failed: {:?}", e);
+            }
+        },
     );
 
     #[cfg(feature = "terminal")]
@@ -103,16 +97,17 @@ fn main() -> EpsResult<()> {
         std::env::args().collect::<Vec<String>>(),
         Arc::new(input),
         Arc::new(output),
-    ).start();
-
-    //Start up UDP server for the Satellite
-     #[cfg(not(any(feature = "terminal", feature = "ground", feature = "gs-auto", feature = "gs-schedule")))]
-    Service::new(
-        service_config,
-        subsystem,
-        Some(Arc::new(udp_handler)),
     )
     .start();
+
+    //Start up UDP server for the Satellite
+    #[cfg(not(any(
+        feature = "terminal",
+        feature = "ground",
+        feature = "gs-auto",
+        feature = "gs-schedule"
+    )))]
+    Service::new(service_config, subsystem, Some(Arc::new(udp_handler))).start();
 
     Ok(())
 }

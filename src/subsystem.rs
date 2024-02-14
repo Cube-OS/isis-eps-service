@@ -19,9 +19,9 @@
 //
 // Comments generated in parts with GPT-3 (see disclaimer in README)
 
+use cubeos_service::Error;
+use isis_eps_api::*;
 use std::sync::{Arc, Mutex, RwLock};
-use cubeos_service::{Error};
-use isis_eps_api::*;  
 
 // include output of macro in cubeos_service
 
@@ -44,7 +44,7 @@ impl Subsystem {
     /// # Output
     ///
     /// *  EpsResult<Self>` - Returns `Self` or EpsError.
-    /// 
+    ///
     pub fn new(i2c_path: String, i2c_addr: u16) -> EpsResult<Self> {
         Ok(Self {
             eps: Arc::new(Mutex::new(Eps::new(i2c_path, i2c_addr)?)),
@@ -72,7 +72,11 @@ impl Subsystem {
     }
 
     pub fn set_group_outputs(&self, typ_group: BusGroup, channels: Vec<u8>) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().set_group_outputs(typ_group, channels)?)
+        Ok(self
+            .eps
+            .lock()
+            .unwrap()
+            .set_group_outputs(typ_group, channels)?)
     }
 
     pub fn set_group_state(&self, typ_group: BusGroup, state: BusChannelState) -> EpsResult<()> {
@@ -80,11 +84,15 @@ impl Subsystem {
     }
 
     pub fn set_single_output(&self, typ_channel: BusChannel, eps_ch_idx: u8) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().set_single_output(typ_channel, eps_ch_idx)?)
+        Ok(self
+            .eps
+            .lock()
+            .unwrap()
+            .set_single_output(typ_channel, eps_ch_idx)?)
     }
 
     pub fn mode_switch(&self, mode: ModeSwitch) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().mode_switch(mode)?)    
+        Ok(self.eps.lock().unwrap().mode_switch(mode)?)
     }
 
     pub fn system_status(&self) -> EpsResult<SystemStatus> {
@@ -116,51 +124,51 @@ impl Subsystem {
     }
 
     // pub fn system_config_cmd(&self, mode: SysConfig1, para_id: u16) -> EpsResult<Vec<u8>> {
-    //     Ok(self.eps.lock().unwrap().system_config_command(mode, para_id)?)   
+    //     Ok(self.eps.lock().unwrap().system_config_command(mode, para_id)?)
     // }
 
     pub fn correct_time(&self, time_correction: i32) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().correct_time(time_correction)?)   
+        Ok(self.eps.lock().unwrap().correct_time(time_correction)?)
     }
 
     pub fn reset_all_counters(&self) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().reset_all_counters()?)   
+        Ok(self.eps.lock().unwrap().reset_all_counters()?)
     }
 
     pub fn get_config_para_write(&self, param: ConfigParamWrite) -> EpsResult<Output> {
-        Ok(self.eps.lock().unwrap().get_config_para_write(param)?)   
+        Ok(self.eps.lock().unwrap().get_config_para_write(param)?)
     }
     pub fn get_config_para_read(&self, param: ConfigParamRead) -> EpsResult<Output> {
-        Ok(self.eps.lock().unwrap().get_config_para_read(param)?)   
+        Ok(self.eps.lock().unwrap().get_config_para_read(param)?)
     }
     pub fn set_config_para_u32(&self, param: ConfigParamWriteU32, input: u32) -> EpsResult<Output> {
-        Ok(self.eps.lock().unwrap().set_config_para_u32(param, input)?)   
+        Ok(self.eps.lock().unwrap().set_config_para_u32(param, input)?)
     }
     pub fn set_config_para_u16(&self, param: ConfigParamWriteU16, input: u16) -> EpsResult<Output> {
-        Ok(self.eps.lock().unwrap().set_config_para_u16(param, input)?)   
+        Ok(self.eps.lock().unwrap().set_config_para_u16(param, input)?)
     }
     pub fn set_config_para_i16(&self, param: ConfigParamWriteI16, input: i16) -> EpsResult<Output> {
-        Ok(self.eps.lock().unwrap().set_config_para_i16(param, input)?)   
+        Ok(self.eps.lock().unwrap().set_config_para_i16(param, input)?)
     }
     pub fn set_config_para_u8(&self, param: ConfigParamWriteU8, input: u8) -> EpsResult<Output> {
-        Ok(self.eps.lock().unwrap().set_config_para_u8(param, input)?)   
+        Ok(self.eps.lock().unwrap().set_config_para_u8(param, input)?)
     }
     pub fn set_config_para_i8(&self, param: ConfigParamWriteI8, input: i8) -> EpsResult<Output> {
-        Ok(self.eps.lock().unwrap().set_config_para_i8(param, input)?)   
+        Ok(self.eps.lock().unwrap().set_config_para_i8(param, input)?)
     }
     pub fn reset_param(&self, param: ConfigParamWrite) -> EpsResult<Output> {
-        Ok(self.eps.lock().unwrap().reset_param(param)?)   
+        Ok(self.eps.lock().unwrap().reset_param(param)?)
     }
     pub fn reset_all_conf(&self) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().reset_all_conf()?)   
+        Ok(self.eps.lock().unwrap().reset_all_conf()?)
     }
     pub fn load_config(&self) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().load_config()?)   
+        Ok(self.eps.lock().unwrap().load_config()?)
     }
     pub fn force_save_config(&self) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().save_config_force()?)   
+        Ok(self.eps.lock().unwrap().save_config_force()?)
     }
     pub fn save_config(&self) -> EpsResult<()> {
-        Ok(self.eps.lock().unwrap().save_config()?)   
+        Ok(self.eps.lock().unwrap().save_config()?)
     }
 }

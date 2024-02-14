@@ -32,7 +32,7 @@ use isis_eps_api::*;
 
 service_macro! {
     use isis_eps_api::EpsError;
-    subsystem::Subsystem{ 
+    subsystem::Subsystem{
         query: EpsPing => fn eps_ping(&self) -> Result<()>; out: ();
         query: Status => fn system_status(&self) -> Result<SystemStatus>; out: SystemStatus;
         query: OvercurrentState => fn overcurrent_state(&self) -> Result<OverCurrentFaultState>; out: OverCurrentFaultState;
@@ -57,7 +57,7 @@ service_macro! {
         mutation: SetSingleOutput => fn set_single_output(&self, typ_channel: BusChannel, eps_ch_idx: u8) -> EpsResult<()>;
         mutation: ModeSwitchFn => fn mode_switch(&self, mode: ModeSwitch) -> EpsResult<()>;
         mutation: CorrectTime => fn correct_time(&self, time_correction: i32) -> EpsResult<()>;
-        mutation: ResetAllCounters => fn reset_all_counters(&self) -> EpsResult<()>;        
+        mutation: ResetAllCounters => fn reset_all_counters(&self) -> EpsResult<()>;
         mutation: ResetAllConf => fn reset_all_conf(&self) -> EpsResult<()>;
         mutation: LoadConfig => fn load_config(&self) -> EpsResult<()>;
         mutation: SaveConfig => fn save_config(&self) -> EpsResult<()>;
